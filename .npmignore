@@ -1,0 +1,11 @@
+test_*
+src
+scripts
+node_modules
+jsr.jsonc
+*.tgz
+*.sh
+*.patch
+*.mod
+*.sum
+.*

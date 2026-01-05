@@ -1,0 +1,9 @@
+function notify() {
+	(ffplay "start.flac" &)
+	if "$@"; then
+		(ffplay "done.flac" &)
+	else
+		(ffplay "buzzer.flac" &)
+		return $?
+	fi
+}

@@ -1,0 +1,55 @@
+{
+	"name": "@wasm-fmt/shfmt",
+	"description": "A wasm based shell script formatter",
+	"author": "magic-akari <akari.ccino@gmail.com>",
+	"version": "0.0.0",
+	"license": "MIT",
+	"keywords": [
+		"wasm",
+		"shell",
+		"formatter",
+		"shfmt",
+		"bash"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wasm-fmt/shfmt"
+	},
+	"homepage": "https://github.com/wasm-fmt/shfmt",
+	"bugs": {
+		"url": "https://github.com/wasm-fmt/shfmt/issues"
+	},
+	"type": "module",
+	"main": "shfmt.js",
+	"module": "shfmt.js",
+	"types": "shfmt.d.ts",
+	"exports": {
+		".": {
+			"types": "./shfmt.d.ts",
+			"node": "./shfmt_node.js",
+			"default": "./shfmt.js"
+		},
+		"./vite": {
+			"types": "./shfmt.d.ts",
+			"default": "./shfmt_vite.js"
+		},
+		"./package.json": "./package.json",
+		"./*": "./*"
+	},
+	"scripts": {
+		"build": "./scripts/build.sh",
+		"test:go": "go test -C src -v",
+		"test:node": "node --test test_node/shfmt.test.js",
+		"test:deno": "deno test test_deno --allow-read",
+		"test:bun": "bun test test_bun"
+	},
+	"engines": {
+		"node": ">=16.17.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@ast-grep/napi": "0.40.3"
+	}
+}

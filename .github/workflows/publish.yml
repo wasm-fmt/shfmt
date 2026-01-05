@@ -1,0 +1,57 @@
+name: Publish
+
+on:
+    push:
+        tags:
+            - "v*"
+
+jobs:
+    publish:
+        if: startsWith(github.ref, 'refs/tags/v')
+        permissions:
+            packages: write
+            contents: write
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version-file: ".node-version"
+                  registry-url: "https://registry.npmjs.org"
+
+            - run: npm ci
+
+            - run: |
+                  wget -P ${{ runner.temp }} https://github.com/tinygo-org/tinygo/releases/download/v0.40.1/tinygo_0.40.1_amd64.deb
+                  yes | sudo dpkg -i ${{ runner.temp }}/tinygo_0.40.1_amd64.deb
+
+            - name: Build
+              run: scripts/build.sh
+              shell: bash
+
+            - name: Publish to npmjs
+              run: npm publish --provenance
+
+            - name: Publish to jsr
+              run: npx jsr publish
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version-file: ".node-version"
+                  registry-url: "https://npm.pkg.github.com"
+
+            - name: Publish to github packages
+              run: npm publish
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Pack
+              run: npm pack
+
+            - name: Publish to Github Releases
+              uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564
+              with:
+                  files: |
+                      wasm-fmt-*.tgz
+                      shfmt.wasm
