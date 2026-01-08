@@ -1,5 +1,5 @@
 #!/usr/bin/env deno test --allow-read --parallel
-import init, { format } from "../shfmt.js";
+import init, { format } from "../shfmt_esm.js";
 
 import { assertEquals } from "jsr:@std/assert";
 import { expandGlob } from "jsr:@std/fs";

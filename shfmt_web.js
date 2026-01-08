@@ -54,44 +54,32 @@ function finalize_init(instance, module) {
 	return wasm;
 }
 
-export function initSync(buffer_or_module) {
+export function initSync(module) {
 	if (wasm !== void 0) return wasm;
 
-	if (!(buffer_or_module instanceof WebAssembly.Module)) {
-		buffer_or_module = new WebAssembly.Module(buffer_or_module);
+	if (!(module instanceof WebAssembly.Module)) {
+		module = new WebAssembly.Module(module);
 	}
-
-	return finalize_init(
-		new WebAssembly.Instance(buffer_or_module),
-		buffer_or_module,
-	);
+	const instance = new WebAssembly.Instance(module);
+	return finalize_init(instance, module);
 }
 
-export default async function initAsync(init_input) {
+export default async function initAsync(module_or_path) {
 	if (wasm !== void 0) return wasm;
 
-	if (init_input === void 0) {
-		init_input = new URL("shfmt.wasm", import.meta.url);
+	if (module_or_path === void 0) {
+		module_or_path = new URL("shfmt.wasm", import.meta.url);
 	}
 
-	if (typeof init_input === "string") {
-		init_input = new URL(init_input);
-	}
-
-	if (init_input instanceof URL && init_input.protocol === "file:") {
-		const [{ readFile }, { fileURLToPath }] = await Promise.all([
-			import("fs/promises"),
-			import("url"),
-		]);
-		init_input = readFile(fileURLToPath(init_input));
-	} else if (
-		(typeof Request === "function" && init_input instanceof Request) ||
-		init_input instanceof URL
+	if (
+		typeof module_or_path === "string" ||
+		(typeof Request === "function" && module_or_path instanceof Request) ||
+		(typeof URL === "function" && module_or_path instanceof URL)
 	) {
-		init_input = fetch(init_input);
+		module_or_path = fetch(module_or_path);
 	}
 
-	const { instance, module } = await load(await init_input);
+	const { instance, module } = await load(await module_or_path);
 
 	return finalize_init(instance, module);
 }

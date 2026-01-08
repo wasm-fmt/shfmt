@@ -20,17 +20,14 @@
 		"url": "https://github.com/wasm-fmt/shfmt/issues"
 	},
 	"type": "module",
-	"main": "shfmt.js",
-	"module": "shfmt.js",
-	"types": "shfmt.d.ts",
 	"exports": {
 		".": {
-			"types": "./shfmt.d.ts",
+			"types": "./shfmt_entry.d.ts",
 			"node": "./shfmt_node.js",
-			"default": "./shfmt.js"
+			"default": "./shfmt_web.js"
 		},
 		"./vite": {
-			"types": "./shfmt.d.ts",
+			"types": "./shfmt_entry.d.ts",
 			"default": "./shfmt_vite.js"
 		},
 		"./package.json": "./package.json",
@@ -48,8 +45,5 @@
 	},
 	"publishConfig": {
 		"access": "public"
-	},
-	"devDependencies": {
-		"@ast-grep/napi": "0.40.3"
 	}
 }

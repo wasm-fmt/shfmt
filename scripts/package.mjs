@@ -11,7 +11,7 @@ const pkg_json = JSON.parse(pkg_text);
 
 const jsr_path = path.resolve(pkg_path, "..", "jsr.jsonc");
 pkg_json.name = "@fmt/shfmt";
-pkg_json.exports = "./shfmt.js";
+pkg_json.exports = "./shfmt_web.js";
 pkg_json.exclude = [
 	"!**",
 	"test_*",

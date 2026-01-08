@@ -17,8 +17,6 @@ jobs:
               with:
                   node-version-file: ".node-version"
 
-            - run: npm ci
-
             - run: |
                   wget -P ${{ runner.temp }} https://github.com/tinygo-org/tinygo/releases/download/v0.40.1/tinygo_0.40.1_amd64.deb
                   yes | sudo dpkg -i ${{ runner.temp }}/tinygo_0.40.1_amd64.deb
@@ -33,9 +31,14 @@ jobs:
               with:
                   name: build
                   path: |
-                      shfmt.js
                       shfmt.wasm
                       *.tgz
+
+    go-test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+            - run: go test -C src -v
 
     deno-test:
         runs-on: ubuntu-latest

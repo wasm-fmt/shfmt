@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"os"
 	"path/filepath"
@@ -8,47 +9,30 @@ import (
 	"testing"
 
 	"mvdan.cc/sh/v3/expand"
-	"mvdan.cc/sh/v3/fileutil"
 	"mvdan.cc/sh/v3/syntax"
 )
 
 var update = flag.Bool("update", false, "update golden files")
 
-func detectLanguageGo(source string, path string) syntax.LangVariant {
-	fileLang := syntax.LangAuto
-	extensionLang := strings.TrimPrefix(filepath.Ext(path), ".")
-	if err := fileLang.Set(extensionLang); err == nil && fileLang != syntax.LangPOSIX {
-		return fileLang
-	}
-	shebangLang := fileutil.Shebang([]byte(source))
-	if err := fileLang.Set(shebangLang); err == nil && fileLang != syntax.LangPOSIX {
-		return fileLang
-	}
-	return syntax.LangBash
-}
-
-func formatGo(source string, path string) (string, error) {
-	lang := detectLanguageGo(source, path)
-
+func formatSource(source []byte, path string) ([]byte, error) {
+	lang := detectLanguage(source, path)
 	parser := syntax.NewParser(
 		syntax.KeepComments(true),
 		syntax.Variant(lang),
 	)
-
-	node, err := parser.Parse(strings.NewReader(source), path)
+	node, err := parser.Parse(strings.NewReader(string(source)), path)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	printer := syntax.NewPrinter()
-
-	var buf strings.Builder
+	var buf bytes.Buffer
 	err = printer.Print(&buf, node)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return buf.String(), nil
+	return buf.Bytes(), nil
 }
 
 func ShellGlob(pattern string) ([]string, error) {
@@ -90,7 +74,7 @@ func TestGolden(t *testing.T) {
 				t.Fatalf("failed to read input file: %v", err)
 			}
 
-			actual, err := formatGo(string(input), inputPath)
+			actual, err := formatSource(input, inputPath)
 			if err != nil {
 				t.Fatalf("failed to format: %v", err)
 			}
@@ -98,7 +82,7 @@ func TestGolden(t *testing.T) {
 			goldenPath := inputPath + ".golden"
 
 			if *update {
-				if err := os.WriteFile(goldenPath, []byte(actual), 0644); err != nil {
+				if err := os.WriteFile(goldenPath, actual, 0644); err != nil {
 					t.Fatalf("failed to write golden file: %v", err)
 				}
 			} else {
@@ -107,8 +91,8 @@ func TestGolden(t *testing.T) {
 					t.Fatalf("failed to read golden file: %v", err)
 				}
 
-				if actual != string(expected) {
-					t.Errorf("output does not match golden file\nGOT:\n%s\nWANT:\n%s", actual, expected)
+				if !bytes.Equal(actual, expected) {
+					t.Errorf("output does not match golden file\nGOT:\n%s\nWANT:\n%s", string(actual), string(expected))
 				}
 			}
 		})

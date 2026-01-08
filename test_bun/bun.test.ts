@@ -1,6 +1,6 @@
 #!/usr/bin/env bun test
 import { expect, test } from "bun:test";
-import init, { format } from "..";
+import init, { format } from "../shfmt_node";
 import path from "node:path";
 import { Glob } from "bun";
 
@@ -19,7 +19,7 @@ for await (const input_path of glob.scan({ cwd: test_root })) {
 		Bun.file(expect_path).text(),
 	]);
 
-	const actual = format(input);
+	const actual = format(input, input_path);
 
 	test(input_path, () => {
 		expect(actual).toBe(expected);
