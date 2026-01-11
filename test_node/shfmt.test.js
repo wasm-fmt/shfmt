@@ -8,7 +8,7 @@ import { format } from "../shfmt_node.js";
 
 const test_root = fileURLToPath(new URL("../test_data", import.meta.url));
 
-for await (const input_path of await fs.glob(`${test_root}/**/*.{sh,zsh,bash}`)) {
+for await (const input_path of fs.glob(`${test_root}/**/*.{sh,zsh,bash}`)) {
 	const test_name = path.relative(test_root, input_path);
 	const [input, expected] = await Promise.all([
 		fs.readFile(input_path, { encoding: "utf-8" }),
