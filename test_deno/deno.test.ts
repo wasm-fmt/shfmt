@@ -1,15 +1,16 @@
 #!/usr/bin/env deno test --allow-read --parallel
-import init, { format } from "../shfmt_esm.js";
+import { format } from "../shfmt_esm.js";
 
 import { assertEquals } from "jsr:@std/assert";
 import { expandGlob } from "jsr:@std/fs";
-import { relative, fromFileUrl } from "jsr:@std/path";
-
-await init();
+import { fromFileUrl, relative } from "jsr:@std/path";
 
 const test_root = fromFileUrl(new URL("../test_data", import.meta.url));
 
-for await (const entry of expandGlob("*.{sh,zsh,bash}", { root: test_root, includeDirs: false })) {
+for await (const entry of expandGlob("*.{sh,zsh,bash}", {
+	root: test_root,
+	includeDirs: false,
+})) {
 	const input_path = entry.path;
 	const expect_path = input_path + ".golden";
 	const input = await Deno.readTextFile(input_path);

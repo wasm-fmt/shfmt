@@ -16,10 +16,10 @@ npx jsr add @fmt/shfmt
 
 # Usage
 
-```JavaScript
-import init, { format } from "@wasm-fmt/shfmt";
+## Node.js / Deno / Bun / Bundler
 
-await init();
+```javascript
+import { format } from "@wasm-fmt/shfmt";
 
 const source = `#!/bin/bash
 echo "hello world"
@@ -31,20 +31,55 @@ console.log(formatted);
 
 With options:
 
-```JavaScript
+```javascript
 const formatted = format(source, "script.sh", {
-  indent: 2,
-  binaryNextLine: true,
-  switchCaseIndent: false,
-  spaceRedirects: true,
-  keepPadding: false,
-  funcNextLine: false,
-  minify: false,
-  simplify: true
+	indent: 2,
+	binaryNextLine: true,
+	switchCaseIndent: false,
+	spaceRedirects: true,
+	funcNextLine: false,
+	minify: false,
+	singleLine: false,
+	simplify: true,
 });
 ```
 
-# Build from source
+## Web
+
+For web environments, you need to initialize WASM module manually:
+
+```javascript
+import init, { format } from "@wasm-fmt/shfmt/web";
+
+await init();
+
+const source = `#!/bin/bash
+echo "hello world"
+`;
+
+const formatted = format(source);
+console.log(formatted);
+```
+
+### Vite
+
+```JavaScript
+import init, { format } from "@wasm-fmt/shfmt/vite";
+
+await init();
+// ...
+```
+
+## Entry Points
+
+- `.` - Auto-detects environment (Node.js uses node, Webpack uses bundler, default is ESM)
+- `./node` - Node.js environment (no init required)
+- `./esm` - ESM environments like Deno (no init required)
+- `./bundler` - Bundlers like Webpack (no init required)
+- `./web` - Web browsers (requires manual init)
+- `./vite` - Vite bundler (requires manual init)
+
+## Build from source
 
 ```bash
 # 1. install Go https://go.dev/doc/install
@@ -63,3 +98,9 @@ npm run build
 # 6. test
 npm run test:node
 ```
+
+# Credits
+
+Thanks to:
+
+- The [shfmt](https://github.com/mvdan/sh) project created by [Daniel Martí](https://github.com/mvdan)

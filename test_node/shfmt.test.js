@@ -1,12 +1,10 @@
 #!/usr/bin/env node --test
-import init, { format } from "../shfmt_node.js";
-import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { test } from "node:test";
 import { fileURLToPath } from "node:url";
-
-await init();
+import { format } from "../shfmt_node.js";
 
 const test_root = fileURLToPath(new URL("../test_data", import.meta.url));
 
