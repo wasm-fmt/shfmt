@@ -13,4 +13,4 @@ export default function initAsync(init_input?: InitInput): Promise<InitOutput>;
  */
 export declare function initSync(buffer_or_module: BufferSource | WebAssembly.Module): InitOutput;
 
-export * from "shfmt_entry.d.ts";
+export * from "./shfmt_entry.d.ts";
