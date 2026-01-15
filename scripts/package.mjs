@@ -12,14 +12,14 @@ const pkg_json = JSON.parse(pkg_text);
 const jsr_path = path.resolve(pkg_path, "..", "jsr.jsonc");
 pkg_json.name = "@fmt/shfmt";
 pkg_json.exports = {
-	".": "./shfmt_esm.js",
+	".": "./shfmt.js",
 	"./esm": "./shfmt_esm.js",
 	"./node": "./shfmt_node.js",
-	"./bundler": "./shfmt_bundle.js",
+	"./bundler": "./shfmt.js",
 	"./web": "./shfmt_web.js",
 	// jsr does not support imports from wasm?init
 	// "./vite": "./mago_fmt_vite.js",
-	"./wasm": "./shfmt.wasm",
+	// "./wasm": "./shfmt.wasm",
 };
 pkg_json.exclude = [
 	"!**",

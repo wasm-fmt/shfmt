@@ -22,22 +22,23 @@
 	"type": "module",
 	"exports": {
 		".": {
-			"types": "./shfmt_entry.d.ts",
-			"webpack": "./shfmt_bundle.js",
-			"node": "./shfmt_node.js",
+			"types": "./shfmt.d.ts",
+			"webpack": "./shfmt.js",
+			"deno": "./shfmt.js",
+			"module-sync": "./shfmt_node.js",
 			"default": "./shfmt_esm.js"
 		},
 		"./esm": {
-			"types": "./shfmt_entry.d.ts",
+			"types": "./shfmt.d.ts",
 			"default": "./shfmt_esm.js"
 		},
 		"./node": {
-			"types": "./shfmt_entry.d.ts",
+			"types": "./shfmt.d.ts",
 			"default": "./shfmt_node.js"
 		},
 		"./bundler": {
-			"types": "./shfmt_entry.d.ts",
-			"default": "./shfmt_bundle.js"
+			"types": "./shfmt.d.ts",
+			"default": "./shfmt.js"
 		},
 		"./web": {
 			"types": "./shfmt_web.d.ts",

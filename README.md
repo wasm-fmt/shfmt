@@ -24,7 +24,6 @@ import { format } from "@wasm-fmt/shfmt";
 const source = `#!/bin/bash
 echo "hello world"
 `;
-
 const formatted = format(source);
 console.log(formatted);
 ```
@@ -42,6 +41,12 @@ const formatted = format(source, "script.sh", {
 	singleLine: false,
 	simplify: true,
 });
+```
+
+## Node.js < 22.19
+
+```JavaScript
+import { format } from "@wasm-fmt/shfmt/node";
 ```
 
 ## Web

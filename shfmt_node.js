@@ -1,11 +1,6 @@
-/* @ts-self-types="./shfmt_entry.d.ts" */
-/**
- * Loads the Wasm module using Node's fs API.
- * Consider using `./esm` entry if your environment supports source phase import.
- * @module
- */
+/* @ts-self-types="./shfmt.d.ts" */
 import { readFileSync } from "node:fs";
-import { format as _format } from "./shfmt.js";
+import { format as _format } from "./shfmt_binding.js";
 
 const wasmUrl = new URL("shfmt.wasm", import.meta.url);
 const wasmBytes = readFileSync(wasmUrl);

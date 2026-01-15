@@ -1,11 +1,7 @@
 /* @ts-self-types="./shfmt_web.d.ts" */
-/**
- * Loads the Wasm module for Vite and bundlers supporting `?init` imports.
- * @module
- */
 import init from "./shfmt.wasm?init";
 import initAsync from "./shfmt_web.js";
-import { format as _format } from "./shfmt.js";
+import { format as _format } from "./shfmt_binding.js";
 
 let wasm, wasmModule;
 

@@ -1,11 +1,7 @@
-/* @ts-self-types="./shfmt_entry.d.ts" */
-/**
- * Loads the Wasm module via source phase import.
- * @module
- */
+/* @ts-self-types="./shfmt.d.ts" */
 // prettier-ignore
 import source wasmModule from "./shfmt.wasm";
-import { format as _format } from "./shfmt.js";
+import { format as _format } from "./shfmt_binding.js";
 /**
  * @import * as WASM from "./shfmt.wasm"
  */

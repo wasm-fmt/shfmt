@@ -1,10 +1,5 @@
 /* @ts-self-types="./shfmt_web.d.ts" */
-/**
- * Loads the Wasm module via Web Fetch API (browsers).
- * Requires calling init().
- * @module
- */
-import { format as _format } from "./shfmt.js";
+import { format as _format } from "./shfmt_binding.js";
 let wasm, wasmModule;
 
 async function load(module, imports) {

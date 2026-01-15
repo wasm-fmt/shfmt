@@ -1,61 +1,9 @@
-/**
- * @import * as WASM from "./shfmt.wasm"
- */
+/* @ts-self-types="./shfmt.d.ts" */
+import wasm from "./shfmt.wasm";
+import { format as _format } from "./shfmt_binding.js";
 
-/**
- * @param {WASM} wasm
- * @param {string} source
- * @param {string} [path]
- * @param {object} [options]
- * @return {string}
- */
-export function format(wasm, source, path, options) {
-	try {
-		if (options) {
-			writeStringToWasmMemory(wasm, JSON.stringify(options));
-			wasm.set_options();
-		}
+wasm._initialize();
 
-		if (path) {
-			writeStringToWasmMemory(wasm, path);
-			wasm.set_path();
-		}
-
-		writeStringToWasmMemory(wasm, source);
-		const result = wasm.format();
-		if (result === 0) {
-			return source;
-		}
-
-		const ptr = wasm.output_ptr();
-		const length = wasm.output_len();
-		const text = readStringFromWasmMemory(wasm, ptr, length);
-
-		if (result === 1) {
-			return text;
-		}
-
-		throw new Error(text);
-	} finally {
-		wasm.dispose();
-	}
+export function format(source, path, options) {
+	return _format(wasm, source, path, options);
 }
-
-/**
- * @param {WASM} wasm
- * @param {string} str
- */
-function writeStringToWasmMemory(wasm, str) {
-	const bytes = encoder.encode(str);
-	const ptr = wasm.alloc(bytes.length);
-	const memory = new Uint8Array(wasm.memory.buffer, ptr, bytes.length);
-	memory.set(bytes);
-}
-
-function readStringFromWasmMemory(wasm, ptr, length) {
-	const memory = new Uint8Array(wasm.memory.buffer, ptr, length);
-	return decoder.decode(memory);
-}
-
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();

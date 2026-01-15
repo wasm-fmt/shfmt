@@ -3,24 +3,22 @@ import { format } from "../shfmt_esm.js";
 
 import { assertEquals } from "jsr:@std/assert";
 import { expandGlob } from "jsr:@std/fs";
-import { fromFileUrl, relative } from "jsr:@std/path";
+import { fromFileUrl } from "jsr:@std/path";
 
-const test_root = fromFileUrl(new URL("../test_data", import.meta.url));
+const test_root = fromFileUrl(import.meta.resolve("../test_data"));
 
-for await (const entry of expandGlob("*.{sh,zsh,bash}", {
-	root: test_root,
-	includeDirs: false,
-})) {
-	const input_path = entry.path;
+for await (const { path: input_path, name: case_name } of expandGlob("**/*.{sh,zsh,bash}", { root: test_root })) {
+	if (case_name.startsWith(".")) {
+		Deno.test.ignore(case_name, () => {});
+		continue;
+	}
+
 	const expect_path = input_path + ".golden";
-	const input = await Deno.readTextFile(input_path);
 
-	const actual = format(input, input_path);
-	const expected = await Deno.readTextFile(expect_path);
+	const [input, expected] = await Promise.all([Deno.readTextFile(input_path), Deno.readTextFile(expect_path)]);
 
-	const test_name = relative(test_root, input_path);
-
-	Deno.test(test_name, () => {
+	Deno.test(case_name, () => {
+		const actual = format(input, case_name);
 		assertEquals(actual, expected);
 	});
 }

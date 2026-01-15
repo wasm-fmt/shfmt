@@ -1,4 +1,22 @@
 /**
+ * A wasm based shell script formatter
+ *
+ * @example
+ * ```ts
+ * ```javascript
+ * import { format } from "@wasm-fmt/shfmt";
+ *
+ * const source = `#!/bin/bash
+ * echo "hello world"
+ * `;
+ *
+ * const formatted = format(source);
+ * ```
+ *
+ * @module
+ */
+
+/**
  * Formats a shell script source code.
  * @param source - The shell script source code to format
  * @param path - Optional file path for language detection (e.g., ".bash", ".sh")
