@@ -43,12 +43,6 @@ const formatted = format(source, "script.sh", {
 });
 ```
 
-## Node.js < 22.19
-
-```JavaScript
-import { format } from "@wasm-fmt/shfmt/node";
-```
-
 ## Web
 
 For web environments, you need to initialize WASM module manually:

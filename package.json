@@ -25,7 +25,9 @@
 			"types": "./shfmt.d.ts",
 			"webpack": "./shfmt.js",
 			"deno": "./shfmt.js",
+			"bun": "./shfmt_node.js",
 			"module-sync": "./shfmt_node.js",
+			"node": "./shfmt_node.js",
 			"default": "./shfmt_esm.js"
 		},
 		"./esm": {
