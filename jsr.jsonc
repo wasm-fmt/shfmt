@@ -1,0 +1,24 @@
+{
+	"$schema": "https://jsr.io/schema/config-file.v1.json",
+	"name": "@fmt/shfmt",
+	"version": "0.2.2",
+	"license": "MIT",
+	"exports": {
+		".": "./shfmt.js",
+		"./esm": "./shfmt_esm.js",
+		"./node": "./shfmt_node.js",
+		"./bundler": "./shfmt.js",
+		"./web": "./shfmt_web.js"
+	},
+	"publish": {
+		"include": [
+			"shfmt_*",
+			"shfmt.*",
+			"*.md",
+			"LICENSE"
+		],
+		"exclude": [
+			"!*.wasm"
+		]
+	}
+}

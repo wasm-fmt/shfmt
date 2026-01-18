@@ -1,9 +1,9 @@
 #!/usr/bin/env deno test --allow-read --parallel
-import { format } from "../shfmt_esm.js";
-
 import { assertEquals } from "jsr:@std/assert";
 import { expandGlob } from "jsr:@std/fs";
 import { fromFileUrl } from "jsr:@std/path";
+
+import { format } from "../shfmt_esm.js";
 
 const test_root = fromFileUrl(import.meta.resolve("../test_data"));
 

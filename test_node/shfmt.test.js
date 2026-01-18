@@ -4,13 +4,14 @@ import { glob, readFile } from "node:fs/promises";
 import { basename, join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
+
 import { format } from "../shfmt_node.js";
 
 const test_root = fileURLToPath(import.meta.resolve("../test_data"));
 
 for await (const case_name of glob("**/*.{sh,zsh,bash}", { cwd: test_root })) {
 	if (basename(case_name).startsWith(".")) {
-		test(case_name, { skip: true }, () => {});
+		test.skip(case_name, () => {});
 		continue;
 	}
 
