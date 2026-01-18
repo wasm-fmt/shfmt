@@ -2,7 +2,7 @@
 	"name": "@wasm-fmt/shfmt",
 	"description": "A wasm based shell script formatter",
 	"author": "magic-akari <akari.ccino@gmail.com>",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"license": "MIT",
 	"keywords": [
 		"wasm",
