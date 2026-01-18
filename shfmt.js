@@ -1,5 +1,5 @@
 /* @ts-self-types="./shfmt.d.ts" */
-import wasm from "./shfmt.wasm";
+import * as wasm from "./shfmt.wasm";
 import { format as _format } from "./shfmt_binding.js";
 
 wasm._initialize();
