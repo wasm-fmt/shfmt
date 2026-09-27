@@ -5,25 +5,11 @@ import (
 	"encoding/json"
 	"path/filepath"
 	"strings"
-	"unsafe"
 
+	bridge "github.com/wasm-fmt/bridge/fdk-go"
 	"mvdan.cc/sh/v3/fileutil"
 	"mvdan.cc/sh/v3/syntax"
 )
-
-var (
-	input, output []byte
-	path          string
-	opts          formatOptions
-)
-
-type outputWriter struct{}
-
-// outputWriter lets syntax.Printer write directly into the global output buffer
-func (outputWriter) Write(p []byte) (int, error) {
-	output = append(output, p...)
-	return len(p), nil
-}
 
 type formatOptions struct {
 	Indent           *uint `json:"indent,omitempty"`
@@ -36,44 +22,47 @@ type formatOptions struct {
 	Simplify         *bool `json:"simplify,omitempty"`
 }
 
-//go:wasmexport alloc
-func Alloc(size uint32) uint32 {
-	if size == 0 {
-		input = nil
-		return 0
-	}
+type shfmtFormatter struct{}
 
-	input = make([]byte, size)
-	return uint32(uintptr(unsafe.Pointer(&input[0])))
+func (shfmtFormatter) DefaultConfig() formatOptions {
+	return formatOptions{}
 }
 
-//go:wasmexport dispose
-func Dispose() {
-	input = nil
-	output = nil
-	path = ""
-	opts = formatOptions{}
+func (shfmtFormatter) DecodeConfig(config []byte) (formatOptions, error) {
+	var opts formatOptions
+	if len(config) == 0 {
+		return opts, nil
+	}
+	if err := json.Unmarshal(config, &opts); err != nil {
+		return opts, err
+	}
+	return opts, nil
 }
 
-//go:wasmexport set_options
-func SetOptions() {
-	if input == nil {
-		return
+func (shfmtFormatter) Format(source []byte, filename *string, opts formatOptions) bridge.FormatResult {
+	path := ""
+	if filename != nil {
+		path = *filename
 	}
 
-	if err := json.Unmarshal(input, &opts); err != nil {
-		return
+	output, err := formatSource(source, path, opts)
+	if err == nil && bytes.Equal(source, output) {
+		return bridge.Unchanged()
 	}
+	return bridge.FromBytes(output, err)
 }
 
-//go:wasmexport set_path
-func SetPath() {
-	if input == nil {
-		path = ""
-		return
+func formatSource(source []byte, path string, opts formatOptions) ([]byte, error) {
+	node, err := parseSource(source, path, opts)
+	if err != nil {
+		return nil, err
 	}
 
-	path = string(input)
+	var buf bytes.Buffer
+	if err := createPrinter(opts).Print(&buf, node); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
 func detectLanguage(source []byte, path string) syntax.LangVariant {
@@ -89,7 +78,7 @@ func detectLanguage(source []byte, path string) syntax.LangVariant {
 	return syntax.LangBash
 }
 
-func createPrinter() *syntax.Printer {
+func createPrinter(opts formatOptions) *syntax.Printer {
 	printerOpts := make([]syntax.PrinterOption, 0, 7)
 	if opts.Indent != nil {
 		printerOpts = append(printerOpts, syntax.Indent(*opts.Indent))
@@ -116,46 +105,7 @@ func createPrinter() *syntax.Printer {
 	return syntax.NewPrinter(printerOpts...)
 }
 
-//go:wasmexport format
-func Format() uint32 {
-	node, err := parseSource(input, path)
-	if err != nil {
-		output = []byte(err.Error())
-		return 2
-	}
-
-	printer := createPrinter()
-
-	// Clear output length so repeated calls don't append to the
-	// previous result and we can reuse the backing array when possible.
-	output = output[:0]
-	err = printer.Print(outputWriter{}, node)
-	if err != nil {
-		output = []byte(err.Error())
-		return 2
-	}
-
-	if bytes.Equal(input, output) {
-		return 0
-	}
-
-	return 1
-}
-
-//go:wasmexport output_ptr
-func OutputPtr() uint32 {
-	if len(output) == 0 {
-		return 0
-	}
-	return uint32(uintptr(unsafe.Pointer(&output[0])))
-}
-
-//go:wasmexport output_len
-func OutputLen() uint32 {
-	return uint32(len(output))
-}
-
-func parseSource(source []byte, path string) (*syntax.File, error) {
+func parseSource(source []byte, path string, opts formatOptions) (*syntax.File, error) {
 	lang := detectLanguage(source, path)
 	parser := syntax.NewParser(
 		syntax.KeepComments(true),

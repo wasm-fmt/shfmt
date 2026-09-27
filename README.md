@@ -43,6 +43,33 @@ const formatted = format(source, "script.sh", {
 });
 ```
 
+Without a file path:
+
+```javascript
+const formatted = format(source, {
+	indent: 2,
+	simplify: true,
+});
+```
+
+With a reusable config handle:
+
+```javascript
+import { createConfig, format, releaseConfig } from "@wasm-fmt/shfmt";
+
+const config = createConfig({
+	indent: 2,
+	simplify: true,
+});
+
+try {
+	const formatted = format(source, "script.sh", config);
+	console.log(formatted);
+} finally {
+	releaseConfig(config);
+}
+```
+
 ## Web
 
 For web environments, you need to initialize WASM module manually:

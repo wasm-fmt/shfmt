@@ -10,7 +10,16 @@
 	"oxc": {},
 	"excludes": [
 		"**/*-lock.json",
-		"**/node_modules"
+		"**/node_modules",
+		"shfmt.js",
+		"shfmt_esm.js",
+		"shfmt_node.js",
+		"shfmt_vite.js",
+		"shfmt_web.d.ts",
+		"shfmt_web.js",
+		"shfmt.wasm.d.ts",
+		"shfmt_factory.js",
+		"shfmt_factory.d.ts"
 	],
 	"plugins": [
 		"https://plugins.dprint.dev/json-0.21.1.wasm",

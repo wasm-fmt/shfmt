@@ -14,27 +14,6 @@ import (
 
 var update = flag.Bool("update", false, "update golden files")
 
-func formatSource(source []byte, path string) ([]byte, error) {
-	lang := detectLanguage(source, path)
-	parser := syntax.NewParser(
-		syntax.KeepComments(true),
-		syntax.Variant(lang),
-	)
-	node, err := parser.Parse(strings.NewReader(string(source)), path)
-	if err != nil {
-		return nil, err
-	}
-
-	printer := syntax.NewPrinter()
-	var buf bytes.Buffer
-	err = printer.Print(&buf, node)
-	if err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
-}
-
 func ShellGlob(pattern string) ([]string, error) {
 	cfg := &expand.Config{
 		ReadDir2: os.ReadDir,
@@ -74,7 +53,7 @@ func TestGolden(t *testing.T) {
 				t.Fatalf("failed to read input file: %v", err)
 			}
 
-			actual, err := formatSource(input, inputPath)
+			actual, err := formatSource(input, inputPath, shfmtFormatter{}.DefaultConfig())
 			if err != nil {
 				t.Fatalf("failed to format: %v", err)
 			}
