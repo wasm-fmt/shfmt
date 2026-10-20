@@ -12,3 +12,5 @@ github.com/wasm-fmt/bridge/fdk-go v0.0.1 h1:I1rLsrJfoVhGh6jSKuh77QoaTtMOWUXvtz7t
 github.com/wasm-fmt/bridge/fdk-go v0.0.1/go.mod h1:s0uCkflVe9aStATKclCC8a1D305O4VSWShZEMhC4Vbs=
 mvdan.cc/sh/v3 v3.13.1 h1:DP3TfgZhDkT7lerUdnp6PTGKyxxzz6T+cOlY/xEvfWk=
 mvdan.cc/sh/v3 v3.13.1/go.mod h1:lXJ8SexMvEVcHCoDvAGLZgFJ9Wsm2sulmoNEXGhYZD0=
+mvdan.cc/sh/v3 v3.14.1 h1:bXkhQWNHCs0KZEChF8hYS6FC+T2N9mUZLbQv9blditI=
+mvdan.cc/sh/v3 v3.14.1/go.mod h1:syYCoFET8w9tvevxiXUtY8/ICrU+l26jHmhJDra3Vwo=
